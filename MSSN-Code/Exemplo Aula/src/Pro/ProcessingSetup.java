@@ -1,7 +1,8 @@
 package Pro;
 
-import DLA.DLA;
-import fisica.TesteAPP;
+
+import Physics.ParticleSystemApp;
+import Physics.SolarSystemApp;
 import processing.core.PApplet;
 
 public class ProcessingSetup extends PApplet {
@@ -37,7 +38,10 @@ public class ProcessingSetup extends PApplet {
     }
 
     public static void main(String[] args) {
-       app = new TesteAPP();
+//       app = new ParticleSystemApp();
+
+        app = new SolarSystemApp();
+
         PApplet.main(ProcessingSetup.class);
     }
 
