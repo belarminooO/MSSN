@@ -41,7 +41,7 @@ public class ProcessingSetup extends PApplet {
 //       app = new ParticleSystemApp();
 
         app = new SolarSystemApp();
-
+//
         PApplet.main(ProcessingSetup.class);
     }
 
