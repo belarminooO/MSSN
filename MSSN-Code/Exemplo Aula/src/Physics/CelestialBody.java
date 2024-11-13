@@ -8,7 +8,7 @@ import Tools.SubPlot;
 public class CelestialBody extends Mover{
 
     private int color;
-    private static double G = 6.67e-11;
+    private static final double G = 6.67e-11;
 
     public CelestialBody(PVector pos, PVector vel, float mass, float radius, int color) {
         super(pos, vel, mass, radius);
@@ -33,6 +33,9 @@ public class CelestialBody extends Mover{
         p.circle(pp[0], pp[1], 2*r[0]);
         p.popStyle();
 
+    }
+    public static double getG(){
+        return G;
     }
 
 
