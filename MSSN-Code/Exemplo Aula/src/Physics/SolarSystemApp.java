@@ -7,6 +7,8 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.random.*;
 
 public class SolarSystemApp implements IProcessingApp {
 
@@ -14,14 +16,16 @@ public class SolarSystemApp implements IProcessingApp {
     private float earthMass = 5.97e24f;
     private float distEarthSun = 1.496e11f;
     private float earthSpeed = 3e4f;
-    private ArrayList<CelestialBody> bodies;
-
-//    private float [] viewport = {0.25f,0.25f,0.5f,0.5f};
-float[] viewport = {0.0f, 0.0f, 1.0f, 1.0f};  // Ocupa toda a tela
+    private ArrayList<CelestialBody> planetas;
+    private ArrayList<ParticleSystem> pss;
 
 
+//        private float [] viewport = {0.25f,0.25f,0.5f,0.5f};
+    float[] viewport = {0.0f, 0.0f, 1.0f, 1.0f};  // Ocupa toda a tela
 
-    private double[] window = {-1.2*distEarthSun, 1.2*distEarthSun, -1.2*distEarthSun, 1.2*distEarthSun};
+
+
+    private double[] window = {-1.28*distEarthSun, 1.28*distEarthSun, -1.28*distEarthSun, 1.28*distEarthSun};
 
     private SubPlot plt;
     private CelestialBody sun, earth;
@@ -36,7 +40,8 @@ float[] viewport = {0.0f, 0.0f, 1.0f, 1.0f};  // Ocupa toda a tela
         sun = new CelestialBody(new PVector(), new PVector(), sunMass, distEarthSun/10, p.color(255, 128,0));
         earth = new CelestialBody(new PVector(0,distEarthSun), new PVector(earthSpeed,0), earthMass,
                 distEarthSun/20, p.color(0,180,120));
-        bodies = new ArrayList<>();
+        planetas = new ArrayList<>();
+        pss = new ArrayList<ParticleSystem>();
 
     }
 
@@ -57,47 +62,60 @@ float[] viewport = {0.0f, 0.0f, 1.0f, 1.0f};  // Ocupa toda a tela
         earth.move(dt*speedUp);
         earth.display(p,plt);
 
+        for(int i =0; i< pss.size(); i++){
+            PVector fCom = sun.attraction(pss.get(i));
+            pss.get(i).applyForce(fCom.mult(1.5e12f));
+            pss.get(i).move(dt*3);
+            pss.get(i).display(p,plt);
+        }
 
-        for (CelestialBody body : bodies) {
-            PVector attraction = sun.attraction(body);
-            body.applyForce(attraction);
-            body.move(dt * speedUp);
-            body.display(p, plt);
+//        for(ParticleSystem ps : pss) {
+//            ps.applyForce(new PVector(0,-1));
+//        }
+
+
+//        for(ParticleSystem ps : pss) {
+//            ps.move(dt);
+//            ps.display(p,plt);
+//        }
         }
 
 
-    }
 
     @Override
     public void mousePressed(PApplet p) {
-        // Obtém a posição do mouse e converte para coordenadas do mundo
-        float[] mousePos = {p.mouseX, p.mouseY};
-        double[] worldPos = plt.getWorldCoord(mousePos[0], mousePos[1]);
-        PVector pos = new PVector((float) worldPos[0], (float) worldPos[1]);
 
-        // Calcula a distância entre o novo corpo e o Sol
-        PVector toSun = PVector.sub(pos, sun.getPos());
-        float distance = toSun.mag();
 
-        // Calcula a magnitude da velocidade orbital necessária
-        float orbitalSpeed = (float) Math.sqrt(CelestialBody.getG() *sunMass / distance);
 
-        // Define a direção da velocidade como perpendicular ao vetor que aponta para o Sol
-        PVector vel = toSun.copy().normalize().rotate(PApplet.HALF_PI).mult(orbitalSpeed);
 
-        // Gera massa, raio e cor aleatórios usando p.random()
-        float mass = p.random(1e23f, 5e24f); // Massa aleatória
-        float radius = distEarthSun / 30 * p.random(0.5f, 1.0f); // Raio aleatório
-        int color = p.color(p.random(256), p.random(256), p.random(256)); // Cor aleatória
 
-        // Cria o novo corpo com a velocidade ajustada para uma órbita e o adiciona à lista
-        CelestialBody newBody = new CelestialBody(pos, vel, mass, radius, color);
-        bodies.add(newBody);
+//        CelestialBody(PVector pos, PVector vel, float mass, float radius, int color)
+
+
     }
 
 
     @Override
     public void keyPressed(PApplet p) {
+        if (p.key == 'a'){
+            Random rr = new Random();
+
+            double [] ww = plt.getWorldCoord(p.mouseX,p.mouseY);
+
+            int cor = p.color(p.random(255), p.random(255), p.random(255));
+            float vx = rr.nextFloat(4,10);
+            float vy = rr.nextFloat(4,10);
+            float vvx = rr.nextFloat(-10,10);
+            float vvy = rr.nextFloat(-10,10);
+
+            float lifespan = rr.nextFloat(1,5);
+
+            ParticleSystem ps= new ParticleSystem(new PVector((float)ww[0], (float)ww[1]), new PVector(2e9f*vvx, 8e9f*vvy), 5e14f,distEarthSun/60, cor, lifespan, new PVector(2e9f*vx, 2e9f*vy));
+
+            pss.add(ps);
+
+
+        }
 
     }
 }
