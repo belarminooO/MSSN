@@ -2,7 +2,7 @@ package exercicioC;
 
 import mssn.IProcessingApp;
 import physics.ParticleSystem;
-import physics.RigidBody;
+import physics.CelestialBody;
 import mssn.SubPlot;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -16,7 +16,7 @@ public class PartialSolarSystem implements IProcessingApp {
 	private final float size = 1.5e11f;
 	private SubPlot plt;
 
-	private RigidBody sun;
+	private CelestialBody sun;
 	private float sunMass = 1.989e30f;
 	private float sunRadius = 696.34e6f;
 	private PVector sunPos = new PVector(0, 0);
@@ -24,7 +24,7 @@ public class PartialSolarSystem implements IProcessingApp {
 
 
 	//mercurio
-	private RigidBody mercury;
+	private CelestialBody mercury;
 	private float mercuryMass = 0.33e24f;
 	private float mercuryRadius = 2.4397e6f*30;
 	private PVector mercuryPos = new PVector(0, 6.814e10f);
@@ -33,7 +33,7 @@ public class PartialSolarSystem implements IProcessingApp {
 
 
 	//venus
-	private RigidBody venus;
+	private CelestialBody venus;
 	private float venusMass = 4.87e24f;
 	private float venusRadius = 6.0518e6f*30;
 	private PVector venusPos = new PVector(0, 1.0843e11f);
@@ -41,7 +41,7 @@ public class PartialSolarSystem implements IProcessingApp {
 	private int[] venusColour = {225, 228, 195};
 
 	//earth
-	private RigidBody earth;
+	private CelestialBody earth;
 	private float earthMass = 5.972e24f;
 	private float earthRadius = 6.371e6f*30;
 	private PVector earthPos = new PVector(0, 1.4813e11f);
@@ -49,7 +49,7 @@ public class PartialSolarSystem implements IProcessingApp {
 	private int[] earthColour = {72, 118, 186};
 
 	//mars
-	private RigidBody mars;
+	private CelestialBody mars;
 	private float marsMass = 6.39e23f;
 	private float marsRadius = 3.3895e6f*30;
 	private PVector marsPos = new PVector(0,2.2554e11f);
@@ -57,7 +57,7 @@ public class PartialSolarSystem implements IProcessingApp {
 	private int[] marsColour = {213,69,33};
 
 	//moon
-	private RigidBody moon;
+	private CelestialBody moon;
 	private float moonMass = 7.347e22f; //original 7.347e22f; 0.0123f
 	private float moonRadius = 0.2727f*earthRadius;
 	private PVector moonPos = new PVector(0,1.6e11f);
@@ -68,7 +68,7 @@ public class PartialSolarSystem implements IProcessingApp {
 	private double[]window = {-size, size,-size, size};
 
 	private List<ParticleSystem> pss;
-	private List<RigidBody> Rb;
+	private ArrayList<CelestialBody> bodies;
 
 
 	@Override
@@ -76,38 +76,40 @@ public class PartialSolarSystem implements IProcessingApp {
 		plt = new SubPlot(window, viewport, p.width, p.height);
 
 		//sol
-		sun = new RigidBody(sunPos, new PVector(0,0), sunMass, sunRadius, sunColour);
+		sun = new CelestialBody(sunPos, new PVector(0,0), sunMass, sunRadius, sunColour);
 
 		//planetas
-		mercury = new RigidBody(mercuryPos, mercuryVel, mercuryMass, mercuryRadius, mercuryColour);
-		venus = new RigidBody(venusPos, venusVel, venusMass, venusRadius, venusColour);
-		earth = new RigidBody(earthPos, earthVel, earthMass, earthRadius, earthColour);
-		mars = new RigidBody(marsPos, marsVel, marsMass,marsRadius,marsColour);
+		mercury = new CelestialBody(mercuryPos, mercuryVel, mercuryMass, mercuryRadius, mercuryColour);
+		venus = new CelestialBody(venusPos, venusVel, venusMass, venusRadius, venusColour);
+		earth = new CelestialBody(earthPos, earthVel, earthMass, earthRadius, earthColour);
+		mars = new CelestialBody(marsPos, marsVel, marsMass,marsRadius,marsColour);
 
 		//lua
-		moon = new RigidBody(moonPos,moonVel,moonMass,moonRadius,moonColour);
+		moon = new CelestialBody(moonPos,moonVel,moonMass,moonRadius,moonColour);
 
-		//cometas ao click no ecrã
+
 		pss = new ArrayList<ParticleSystem>();
-		Rb = new ArrayList<RigidBody>();
+		bodies = new ArrayList<>();
 	}
 
 	@Override
 	public void mousePressed(PApplet p) {
 
 		Random rn = new Random();
+		double[] worldCoord = plt.getWorldCoord(p.mouseX, p.mouseY);
+		PVector pos = new PVector((float) worldCoord[0], (float) worldCoord[1]);
+		PVector directionToSun = PVector.sub(pos, sun.getPos());
+		float distanceToSun = directionToSun.mag();
 		double[] ww = plt.getWorldCoord(p.mouseX,p.mouseY);
 		int[] cor = {rn.nextInt(255),rn.nextInt(255),rn.nextInt(255)};
-		float rad = rn.nextFloat(1,4);
-		float mass = rn.nextFloat(1,4);
-		float vvx = rn.nextFloat(-3, 3);
-		float vvy = rn.nextFloat(-3, 3);
+		float rad = p.random(1e9f/30, 5e9f/30);
+		float mass = p.random(1e20f, 1e25f);
 
+		float orbitalSpeed = (float) Math.sqrt(CelestialBody.getG() * sunMass / distanceToSun);
+		PVector velocity = directionToSun.copy().rotate(-PApplet.HALF_PI).normalize().mult(orbitalSpeed);
 
-		RigidBody rb = new RigidBody(new PVector((float)ww[0],(float)ww[1]),new PVector(2e9f*vvx,8e9f*vvy),mass,earthRadius/rad,cor);
-		Rb.add(rb);
-
-
+		CelestialBody rb = new CelestialBody(pos,velocity,mass,rad,cor);
+		bodies.add(rb);
 
 	}
 
@@ -172,12 +174,11 @@ public class PartialSolarSystem implements IProcessingApp {
 			//if (inCircle(pss.get(i))) pss.remove(pss.get(i));
 		}
 
-		for (int j = 0; j < Rb.size(); j++) {
-			PVector fCom = sun.getAttraction(Rb.get(j));
-			Rb.get(j).applyForce(fCom.mult(1.5e12f));
-			Rb.get(j).move(dt * 3);
-			Rb.get(j).display(p, plt);
-			//if (inCircle(pss.get(i))) pss.remove(pss.get(i));
+		for (CelestialBody body : bodies) {
+			PVector attraction = sun.getAttraction(body);
+			body.applyForce(attraction);
+			body.move(dt * speedUp);
+			body.display(p, plt);
 		}
 
 

@@ -1,14 +1,18 @@
-package physics;
+package Physics;
 
-import mssn.SubPlot;
+import Tools.SubPlot;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class Particle extends RigidBody{
+public class Particle extends Mover{
+
     private float lifespan;
+    private int color;
     private float timer;
-    public Particle(PVector pos, PVector vel, float radius, int[] colour, float lifespan) {
-        super(pos, vel, 0f, radius, colour);
+
+    protected Particle(PVector pos, PVector vel, float radius, int color, float lifespan) {
+        super(pos, vel, 0f, radius);
+        this.color = color;
         this.lifespan = lifespan;
         timer = 0;
     }
@@ -20,17 +24,21 @@ public class Particle extends RigidBody{
     }
 
     public boolean isDead(){
-        return timer > lifespan;
+        return timer >lifespan;
     }
 
     public void display(PApplet p, SubPlot plt){
         p.pushStyle();
-        float alpha = PApplet.map(timer,0,lifespan,255,0);
-        p.fill(this.getColour()[0],this.getColour()[1],this.getColour()[2],alpha);
-        float[] pp = plt.getPixelCoord(this.getPos().x,this.getPos().y);
-        float[] r = plt.getDimInPixel(this.getRadius(),this.getRadius());
+
+        float alpha = PApplet.map(timer, 0, lifespan, 255,0);
+        p.fill(color, alpha);
+
+        float[] pp = plt.getPixelCoord(pos.x, pos.y);
+        float []  r = plt.getDimInPixel(radius, radius);
+
         p.noStroke();
-        p.circle(pp[0],pp[1],2*r[0]);
+        p.circle(pp[0], pp[1], 2*r[0]);
+
         p.popStyle();
     }
 }

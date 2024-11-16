@@ -1,6 +1,6 @@
 package exercicioC;
 
-import physics.RigidBody;
+import physics.CelestialBody;
 import mssn.IProcessingApp;
 import mssn.SubPlot;
 import processing.core.PApplet;
@@ -8,11 +8,11 @@ import processing.core.PVector;
 
 public class SolarSystemComplete implements IProcessingApp {
 
-    private float speedUp = 60*60*24*30;
+    private float speedUp = 60*60*24*300;
     private final float size = 3e12f;
     private SubPlot plt;
 
-    private RigidBody sun;
+    private CelestialBody sun;
     private float sunMass = 1.989e30f;
     private float sunRadius = 696.34e6f;
     private PVector sunPos = new PVector(0, 0);
@@ -20,7 +20,7 @@ public class SolarSystemComplete implements IProcessingApp {
 
 
     //mercurio
-    private RigidBody mercury;
+    private CelestialBody mercury;
     private float mercuryMass = 0.33e24f;
     private float mercuryRadius = 2.4397e6f*30;
     private PVector mercuryPos = new PVector(0, 6.814e10f);
@@ -29,7 +29,7 @@ public class SolarSystemComplete implements IProcessingApp {
 
 
     //venus
-    private RigidBody venus;
+    private CelestialBody venus;
     private float venusMass = 4.87e24f;
     private float venusRadius = 6.0518e6f*30;
     private PVector venusPos = new PVector(0, 1.0843e11f);
@@ -37,7 +37,7 @@ public class SolarSystemComplete implements IProcessingApp {
     private int[] venusColour = {225, 228, 195};
 
     //earth
-    private RigidBody earth;
+    private CelestialBody earth;
     private float earthMass = 5.972e24f;
     private float earthRadius = 6.371e6f*30;
     private PVector earthPos = new PVector(0, 1.4813e11f);
@@ -45,7 +45,7 @@ public class SolarSystemComplete implements IProcessingApp {
     private int[] earthColour = {72, 118, 186};
 
     //mars
-    private RigidBody mars;
+    private CelestialBody mars;
     private float marsMass = 6.39e23f;
     private float marsRadius = 3.3895e6f*30;
     private PVector marsPos = new PVector(0,2.2554e11f);
@@ -53,7 +53,7 @@ public class SolarSystemComplete implements IProcessingApp {
     private int[] marsColour = {213,69,33};
 
     //jupiter
-    private RigidBody jupiter;
+    private CelestialBody jupiter;
     private float jupiterMass = 1.898e27f;
     private float jupiterRadius = 6.9911e7f*30;
     private PVector jupiterPos = new PVector(0, 7.4089e11f);
@@ -61,7 +61,7 @@ public class SolarSystemComplete implements IProcessingApp {
     private int[] jupiterColour = {185, 132, 71};
 
     //saturn
-    private RigidBody saturn;
+    private CelestialBody saturn;
     private float saturnMass = 5.683e26f;
     private float saturnRadius = 5.8232e7f*30;
     private PVector saturnPos = new PVector(0,1.4713e12f);
@@ -69,7 +69,7 @@ public class SolarSystemComplete implements IProcessingApp {
     private int[] saturnColour = {219,146,1};
 
     //uranus
-    private RigidBody uranus;
+    private CelestialBody uranus;
     private float uranusMass = 8.681e25f;
     private float uranusRadius = 2.5362e7f*30;
     private PVector uranusPos = new PVector(0, 2.9428e12f);
@@ -77,7 +77,7 @@ public class SolarSystemComplete implements IProcessingApp {
     private int[] uranusColour = {133, 213, 247};
 
     //nuptune
-    private RigidBody neptune;
+    private CelestialBody neptune;
     private float neptuneMass = 1.024e26f;
     private float neptuneRadius = 2.4622e7f*30;
     private PVector neptunePos = new PVector(0,4.4738e12f);
@@ -92,15 +92,15 @@ public class SolarSystemComplete implements IProcessingApp {
     @Override
     public void setup(PApplet p) {
         plt = new SubPlot(window, viewport, p.width, p.height);
-        sun = new RigidBody(sunPos, new PVector(0,0), sunMass, sunRadius, sunColour);
-        mercury = new RigidBody(mercuryPos, mercuryVel, mercuryMass, mercuryRadius, mercuryColour);
-        venus = new RigidBody(venusPos, venusVel, venusMass, venusRadius, venusColour);
-        earth = new RigidBody(earthPos, earthVel, earthMass, earthRadius, earthColour);
-        mars = new RigidBody(marsPos, marsVel, marsMass,marsRadius,marsColour);
-        jupiter = new RigidBody(jupiterPos, jupiterVel, jupiterMass, jupiterRadius, jupiterColour);
-        saturn = new RigidBody(saturnPos, saturnVel, saturnMass,saturnRadius,saturnColour);
-        uranus = new RigidBody(uranusPos, uranusVel, uranusMass, uranusRadius, uranusColour);
-        neptune = new RigidBody(neptunePos, neptuneVel, neptuneMass,neptuneRadius,neptuneColour);
+        sun = new CelestialBody(sunPos, new PVector(0,0), sunMass, sunRadius, sunColour);
+        mercury = new CelestialBody(mercuryPos, mercuryVel, mercuryMass, mercuryRadius, mercuryColour);
+        venus = new CelestialBody(venusPos, venusVel, venusMass, venusRadius, venusColour);
+        earth = new CelestialBody(earthPos, earthVel, earthMass, earthRadius, earthColour);
+        mars = new CelestialBody(marsPos, marsVel, marsMass,marsRadius,marsColour);
+        jupiter = new CelestialBody(jupiterPos, jupiterVel, jupiterMass, jupiterRadius, jupiterColour);
+        saturn = new CelestialBody(saturnPos, saturnVel, saturnMass,saturnRadius,saturnColour);
+        uranus = new CelestialBody(uranusPos, uranusVel, uranusMass, uranusRadius, uranusColour);
+        neptune = new CelestialBody(neptunePos, neptuneVel, neptuneMass,neptuneRadius,neptuneColour);
     }
 
     @Override
