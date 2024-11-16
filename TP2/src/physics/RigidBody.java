@@ -48,10 +48,7 @@ public class RigidBody {
 		PVector r = PVector.sub(this.pos, rb.pos);
 		float dist = r.mag();
 		float strenght = (float)(this.G*this.mass*rb.mass / Math.pow(dist,2));
-
-		System.out.println("a");
 		return r.normalize().mult(strenght);
-
 	}
 
 	public void move(float dt){

@@ -68,6 +68,8 @@ public class PartialSolarSystem implements IProcessingApp {
 	private double[]window = {-size, size,-size, size};
 
 	private List<ParticleSystem> pss;
+	private List<RigidBody> Rb;
+
 
 	@Override
 	public void setup(PApplet p) {
@@ -87,10 +89,25 @@ public class PartialSolarSystem implements IProcessingApp {
 
 		//cometas ao click no ecrã
 		pss = new ArrayList<ParticleSystem>();
+		Rb = new ArrayList<RigidBody>();
 	}
 
 	@Override
 	public void mousePressed(PApplet p) {
+
+		Random rn = new Random();
+		double[] ww = plt.getWorldCoord(p.mouseX,p.mouseY);
+		int[] cor = {rn.nextInt(255),rn.nextInt(255),rn.nextInt(255)};
+		float rad = rn.nextFloat(1,4);
+		float mass = rn.nextFloat(1,4);
+		float vvx = rn.nextFloat(-3, 3);
+		float vvy = rn.nextFloat(-3, 3);
+
+
+		RigidBody rb = new RigidBody(new PVector((float)ww[0],(float)ww[1]),new PVector(2e9f*vvx,8e9f*vvy),mass,earthRadius/rad,cor);
+		Rb.add(rb);
+
+
 
 	}
 
@@ -152,6 +169,14 @@ public class PartialSolarSystem implements IProcessingApp {
 			pss.get(i).applyForce(fCom.mult(1.5e12f));
 			pss.get(i).move(dt * 3);
 			pss.get(i).display(p, plt);
+			//if (inCircle(pss.get(i))) pss.remove(pss.get(i));
+		}
+
+		for (int j = 0; j < Rb.size(); j++) {
+			PVector fCom = sun.getAttraction(Rb.get(j));
+			Rb.get(j).applyForce(fCom.mult(1.5e12f));
+			Rb.get(j).move(dt * 3);
+			Rb.get(j).display(p, plt);
 			//if (inCircle(pss.get(i))) pss.remove(pss.get(i));
 		}
 
