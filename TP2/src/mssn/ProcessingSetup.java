@@ -36,12 +36,12 @@ public class ProcessingSetup extends PApplet{
         app.keyPressed(this);
     }
     public static void main(String[] args) {
-//        app = new PartialSolarSystem();
+        app = new PartialSolarSystem();
 //        app = new HunterApp();
 //        app = new FlockApp();
 //        app = new ParticleSystemApp();
         //app = new DeBugApp();
-//        app = new SolarSystemComplete();
+//       app = new SolarSystemComplete();
         PApplet.main(ProcessingSetup.class);
     }
 

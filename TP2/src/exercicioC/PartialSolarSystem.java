@@ -68,7 +68,6 @@ public class PartialSolarSystem implements IProcessingApp {
 	private double[]window = {-size, size,-size, size};
 
 	private List<ParticleSystem> pss;
-	private ParticleSystem test;
 
 	@Override
 	public void setup(PApplet p) {
@@ -92,27 +91,35 @@ public class PartialSolarSystem implements IProcessingApp {
 
 	@Override
 	public void mousePressed(PApplet p) {
-		Random rn = new Random();
-		double[] ww = plt.getWorldCoord(p.mouseX,p.mouseY);
-		int[] cor = {rn.nextInt(255),rn.nextInt(255),rn.nextInt(255)};
-		float vx = rn.nextFloat(4,10);
-		float vy = rn.nextFloat(4,10);
-		float vvx = rn.nextFloat(-10,10);
-		float vvy = rn.nextFloat(-10,10);
-		float lifespan = rn.nextFloat(1,5);
-		//ParticleSystem ps = new ParticleSystem(new PVector((float)ww[0],(float)ww[1]),new PVector(3e9f*vvx,3e9f*vvy),5e14f,10*earthRadius,cor,lifespan,new PVector(2e9f*vx,2e9f*vy)); funciona
-		ParticleSystem ps = new ParticleSystem(new PVector((float)ww[0],(float)ww[1]),new PVector(2e9f*vvx,8e9f*vvy),5e14f,10*earthRadius,cor,lifespan,new PVector(2e9f*vx,2e9f*vy));
-		pss.add(ps);
+
 	}
 
 	@Override
 	public void keyPressed(PApplet p) {
 
+		if (p.key == 'p'|| p.key == 'P') {
+			Random rn = new Random();
+			double[] ww = plt.getWorldCoord(p.mouseX,p.mouseY);
+			int[] cor = {rn.nextInt(255),rn.nextInt(255),rn.nextInt(255)};
+			float vx = rn.nextFloat(4,10);
+			float vy = rn.nextFloat(4,10);
+			float vvx = rn.nextFloat(-3, 3);
+			float vvy = rn.nextFloat(-3, 3);
+			float lifespan = rn.nextFloat(1,5);
+
+
+
+			//ParticleSystem ps = new ParticleSystem(new PVector((float)ww[0],(float)ww[1]),new PVector(3e9f*vvx,3e9f*vvy),5e14f,10*earthRadius,cor,lifespan,new PVector(2e9f*vx,2e9f*vy)); funciona
+			ParticleSystem ps = new ParticleSystem(new PVector((float)ww[0],(float)ww[1]),new PVector(2e9f*vvx,8e9f*vvy),5e14f,10*earthRadius,cor,lifespan,new PVector(2e9f*vx,2e9f*vy));
+			pss.add(ps);
+		}
+
 	}
 
 	@Override
 	public void draw(PApplet p, float dt) {
-		p.background(p.color(0,0,0));
+		p.fill(255, 34); // Manter a suavidade do fundo
+		p.rect(0, 0, p.width, p.height);
 		sun.display(p,plt);
 
 		PVector fMer = sun.getAttraction(mercury);
@@ -147,6 +154,7 @@ public class PartialSolarSystem implements IProcessingApp {
 			pss.get(i).display(p, plt);
 			//if (inCircle(pss.get(i))) pss.remove(pss.get(i));
 		}
+
 
 	}
 }
